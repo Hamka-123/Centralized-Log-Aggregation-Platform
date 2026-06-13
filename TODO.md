@@ -17,7 +17,7 @@ A concise step-by-step implementation checklist aligned with the requirements an
 ### 3. Api_Collector (FastAPI) — basic implementation
 - [ ] Implement `POST /logs` — accept and persist logs (basic validation).
 - [ ] Implement `GET /logs` — support filtering by `service_name`, `level`, `limit`.
-- [ ] Implement `/health` endpoint.
+- [x] Implement `/health` endpoint.
 
 ### 4. Alerting_Worker — core functionality
 - [ ] Implement the worker: DB connection, fetch unprocessed entries (ERROR/CRITICAL).
@@ -27,12 +27,12 @@ A concise step-by-step implementation checklist aligned with the requirements an
 
 ### 5. Containerization
 - [x] Complete `Dockerfile` for `Api_Collector` and `Alerting_Worker` (python:3.11-slim).
-- [ ] Add `HEALTHCHECK` to Dockerfiles.
+- [x] Add `HEALTHCHECK` to Dockerfiles.
 - [x] Add `.dockerignore`.
 
 ### 6. Configuration
 - [x] Keep `.env_template` tracked; add `.env` to `.gitignore` for local overrides.
-- [ ] Document required environment variables (DB_*, SMTP_*).
+- [x] Document required environment variables (DB_*, SMTP_*).
 
 ### 7. Logging
 - [ ] Add `logging` configuration to API and worker (console, INFO level minimum).
@@ -45,7 +45,7 @@ A concise step-by-step implementation checklist aligned with the requirements an
 - [ ] Link to C4 / ER diagrams in `docs/`.
 
 ### 10. Release
-- [ ] First functional commit with clear message.
+- [x] First functional commit with clear message.
 - [ ] Tag as `v0.1.0` or `v1.0.0-alpha`.
 
 ---
@@ -59,13 +59,15 @@ A concise step-by-step implementation checklist aligned with the requirements an
 
 ### Tests & validation
 - [ ] Unit tests for worker and API logic (pytest).
-- [ ] Integration/smoke tests: `docker compose up` + smoke requests.
-- [ ] Testcontainers for real DB testing.
+- [x] Integration/smoke tests: `docker compose up` + smoke requests.
+- [] Testcontainers for real DB testing.
+- [x] Infrastructure and script testing (linting, smoke testing)
 
 ### CI / CD
 - [ ] GitHub Actions pipeline: lint (ruff), type checks (mypy), unit tests.
 - [ ] Automated Docker image builds and registry pushes.
 - [ ] Smoke tests in pipeline.
+- [ ] Infrastructure and script testing (linting, smoke tests)
 
 ### Security & optimization
 - [ ] Minimize DB user privileges (separate app user).
