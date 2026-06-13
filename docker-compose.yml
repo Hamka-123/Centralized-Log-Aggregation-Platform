@@ -1,21 +1,26 @@
+---
 services:
   db:
     image: mariadb:10.11
     container_name: centralized_log_db
+    networks:
+      - app-network
     restart: unless-stopped
+    env_file: .env
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
-      MYSQL_DATABASE: ${DB_NAME:-logs}
-      MYSQL_USER: ${DB_USER:-logs}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-logs}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - db-data:/var/lib/mysql
+      - ./db:/docker-entrypoint-initdb.d:ro
     ports:
       - "3306:3306"
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 5s
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u ${DB_USER} -p$${DB_PASSWORD}"]
       timeout: 3s
+      interval: 5s
       retries: 5
       start_period: 10s
 
@@ -25,20 +30,21 @@ services:
       dockerfile: Dockerfile
     container_name: centralized_log_api
     restart: unless-stopped
+    env_file: .env
     depends_on:
       db:
         condition: service_healthy
     environment:
       - DB_HOST=db
       - DB_PORT=3306
-      - DB_NAME=${DB_NAME:-logs}
-      - DB_USER=${DB_USER:-logs}
-      - DB_PASSWORD=${DB_PASSWORD:-logs}
-      - LOG_LEVEL=INFO
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - LOG_LEVEL=${LOG_LEVEL}
     ports:
       - "8000:8000"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -52,24 +58,25 @@ services:
       dockerfile: Dockerfile
     container_name: centralized_log_worker
     restart: unless-stopped
+    env_file: .env
     depends_on:
       db:
         condition: service_healthy
     environment:
       - DB_HOST=db
       - DB_PORT=3306
-      - DB_NAME=${DB_NAME:-logs}
-      - DB_USER=${DB_USER:-logs}
-      - DB_PASSWORD=${DB_PASSWORD:-logs}
-      - SMTP_HOST=${SMTP_HOST:-smtp.example.com}
-      - SMTP_PORT=${SMTP_PORT:-587}
-      - SMTP_USER=${SMTP_USER:-user@example.com}
-      - SMTP_PASSWORD=${SMTP_PASSWORD:-password}
-      - ALERT_RECIPIENT=${ALERT_RECIPIENT:-ops@example.com}
-      - POLL_INTERVAL=${POLL_INTERVAL:-10}
-      - LOG_LEVEL=INFO
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - ALERT_RECIPIENT=${ALERT_RECIPIENT}
+      - POLL_INTERVAL=${POLL_INTERVAL}
+      - LOG_LEVEL=${LOG_LEVEL}
       - PYTHONUNBUFFERED=1
-    #   - PYTHONPATH=/app     
+    #   - PYTHONPATH=/app
     # command: python -u -m src.worker_controller
     networks:
       - app-network
