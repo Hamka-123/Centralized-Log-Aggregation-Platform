@@ -5,6 +5,12 @@ RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
+BUILD_FLAGS=""
+if [[ "$1" == "--no-cache" ]]; then
+    BUILD_FLAGS="--no-cache"
+    echo -e "${YELLOW}--- Build with --no-cache enabled ---${NC}"
+fi
+
 set -e
 
 cd "$(dirname "$0")/.."
@@ -29,7 +35,6 @@ check_module() {
     echo "Running syntax check for $name..."
     docker build --check "$dir" > /dev/null
 
-    # Добавляем зеленое сообщение здесь
     echo -e "${GREEN}Check complete, no warnings found for $name.${NC}"
 }
 
@@ -40,12 +45,12 @@ check_module "./alerting_worker" "Alerting_Worker"
 echo -e "${GREEN}Validation passed. Starting build process...${NC}"
 
 echo -e "${YELLOW}Building Database image...${NC}"
-docker compose build --no-cache -t centralized-log-db ./db
+docker compose build $BUILD_FLAGS db
 
 echo -e "${YELLOW}Building Api_Collector...${NC}"
-docker compose build --no-cache -t api-collector ./api_collector
+docker compose build $BUILD_FLAGS api_collector
 
 echo -e "${YELLOW}Building Alerting_Worker...${NC}"
-docker compose build --no-cache -t alerting-worker ./alerting_worker
+docker compose build $BUILD_FLAGS alerting_worker
 
 echo -e "${GREEN}Build complete!${NC}"

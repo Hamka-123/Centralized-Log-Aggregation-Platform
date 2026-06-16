@@ -11,8 +11,13 @@ printf "${YELLOW}===================\nRedeploying project pipeline\n============
 echo -e "${YELLOW}--- Stopping containers..."
 docker compose down
 
-echo -e "${GREEN}--- Building containers with NO CACHE...${NC}"
-docker compose build --no-cache
+echo -e "${YELLOW}--- Running Validation and Build...${NC}"
+./scripts/build.sh --no-cache
+
+if [ $? -ne 0 ]; then
+    echo -e "${RED}Build failed during validation or build process.${NC}"
+    exit 1
+fi
 
 echo -e "${YELLOW}--- Starting containers..."
 docker compose up -d --force-recreate
