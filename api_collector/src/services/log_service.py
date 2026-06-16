@@ -21,3 +21,9 @@ class LogService:
 
     def analyze_severity(self, log: LogModel) -> bool:
         return log.level in ["ERROR", "CRITICAL"]
+    
+    async def get_logs(self, service_name: str = None, level: str = None, limit: int = 100):
+        return await self.repo.get_logs(service_name, level, limit)
+    
+    async def get_service_name(self, service_id: int):
+        return await self.repo.get_service_name_by_id(service_id)

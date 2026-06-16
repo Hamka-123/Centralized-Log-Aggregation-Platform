@@ -15,8 +15,8 @@ A concise step-by-step implementation checklist aligned with the requirements an
 - [x] Complete `db/init.sql`: tables `services`, `logs`, `alerts` with constraints and indexes.
 
 ### 3. Api_Collector (FastAPI) — basic implementation
-- [ ] Implement `POST /logs` — accept and persist logs (basic validation).
-- [ ] Implement `GET /logs` — support filtering by `service_name`, `level`, `limit`.
+- [x] Implement `POST /logs` — accept and persist logs (basic validation).
+- [x] Implement `GET /logs` — support filtering by `service_name`, `level`, `limit`.
 - [x] Implement `/health` endpoint.
 
 ### 4. Alerting_Worker — core functionality
@@ -66,8 +66,8 @@ A concise step-by-step implementation checklist aligned with the requirements an
 ### CI / CD
 - [ ] GitHub Actions pipeline: lint (ruff), type checks (mypy), unit tests.
 - [ ] Automated Docker image builds and registry pushes.
-- [ ] Smoke tests in pipeline.
-- [ ] Infrastructure and script testing (linting, smoke tests)
+- [x] Shell CI pipeline
+- [x] Smoke tests in pipeline.
 
 ### Security & optimization
 - [ ] Minimize DB user privileges (separate app user).
@@ -91,6 +91,10 @@ A concise step-by-step implementation checklist aligned with the requirements an
 - [ ] Sequence flow diagrams in `docs/`.
 - [ ] Deployment guide (for simple hosting or Kubernetes).
 - [ ] Contributing guide.
+
+### Frontend
+- [x] Swagger UI
+- [ ] Service status dashboard
 
 ---
 
