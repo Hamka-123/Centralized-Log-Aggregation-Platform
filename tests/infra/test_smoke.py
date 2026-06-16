@@ -19,7 +19,6 @@ def test_containers_are_running(docker_client):
                 container = docker_client.containers.get(name)
                 health = container.attrs.get("State", {}).get("Health", {}).get("Status")
                 
-                # Debugging print (helps you see what's happening)
                 # print(f"Checking {name}: status={health}")
                 
                 # If healthcheck exists but is not 'healthy', we aren't ready yet

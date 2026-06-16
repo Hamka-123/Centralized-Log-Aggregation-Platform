@@ -1,28 +1,32 @@
 import pytest
+import pymysql 
+import os
 import requests
-from sqlalchemy import text
 
-def test_log_flow_api_to_db(db_session):
-    """
-    Integration Test:
-    1. Send a POST request to API.
-    2. Query Database to verify data was saved.
-    """
+def test_log_flow_api_to_db(db_connection, test_service_id):
     # 1. Prepare data
     test_log = {
         "message": "Integration test log",
-        "level": "INFO"
+        "level": "INFO",
+        "service_id": test_service_id
     }
     
-    # 2. Act: Send request to API
-    response = requests.post("http://localhost:8000/logs", json=test_log)
-    assert response.status_code == 201 # Or 200, depending on your API
+    # 2. Act
+    response = requests.post("http://localhost:8000/api/logs", json=test_log)
     
-    # 3. Assert: Check Database using the db_session fixture
-    # Adjust the table name to your actual table name
-    query = text("SELECT message, level FROM logs WHERE message = :msg")
-    result = db_session.execute(query, {"msg": test_log["message"]}).fetchone()
+    # DEBUG: Если 500, то выведет ошибку в консоль
+    if response.status_code != 201:
+        print(f"\nAPI Error: {response.text}")
     
-    assert result is not None
-    assert result[0] == test_log["message"]
-    assert result[1] == test_log["level"]
+    assert response.status_code == 201
+    
+    # 3. Assert: Check Database 
+    # Use DictCursor so the result is returned as a dictionary with column names as keys
+    with db_connection.cursor(pymysql.cursors.DictCursor) as cursor:
+        cursor.execute("SELECT message, level, service_id FROM logs WHERE message = %s", (test_log["message"],))
+        result = cursor.fetchone()
+    
+    assert result is not None, "Log record not found in the database"
+    assert result["message"] == test_log["message"]
+    assert result["level"] == test_log["level"]
+    assert result["service_id"] == test_log["service_id"]

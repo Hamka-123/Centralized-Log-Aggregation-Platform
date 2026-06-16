@@ -2,6 +2,5 @@ pytest
 docker
 requests
 python-dotenv
-sqlalchemy
 pymysql
 httpx

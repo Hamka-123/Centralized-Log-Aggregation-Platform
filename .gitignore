@@ -5,3 +5,6 @@ __pycache__/
 venv/
 .DS_Store
 TODO_ru.md
+*.log
+src/logs/*.log
+.pytest_cache/*
