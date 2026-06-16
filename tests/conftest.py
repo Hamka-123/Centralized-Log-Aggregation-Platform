@@ -9,10 +9,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Создает объект клиента Docker, который позволяет управлять контейнерами прямо из кода тестов (через библиотеку docker-py).
 @pytest.fixture(scope="session")
 def docker_client():
     return docker.from_env()
 
+# Setup-фикстура
 @pytest.fixture(scope="session", autouse=True)
 def setup_infrastructure():
     # ... (код запуска инфраструктуры можно оставить без изменений) ...
@@ -23,12 +25,11 @@ def setup_infrastructure():
         print("\n--- Starting Docker Compose ---")
         subprocess.run(["docker", "compose", "up", "-d"], check=True)
     
-    # ... (здесь твой код ожидания API остался прежним) ...
     yield
     if not keep_infra:
         subprocess.run(["docker", "compose", "down"], check=True)
 
-# Новая фикстура подключения
+# фикстура подключения к бд
 @pytest.fixture(scope="session")
 def db_connection():
     """
@@ -63,7 +64,7 @@ def seed_test_data(db_connection):
             )
     yield
 
-# Фикстура получения ID
+# Фикстура получения ID сервиса
 @pytest.fixture(scope="session")
 def test_service_id(db_connection):
     service_name = "test-service"
