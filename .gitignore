@@ -7,4 +7,4 @@ venv/
 TODO_ru.md
 *.log
 src/logs/*.log
-.pytest_cache/*
+*requirements_backup.txt
