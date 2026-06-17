@@ -1,12 +1,12 @@
 import docker
 import pytest
 import subprocess
-import time
-import requests
 import os
 import sys
 import pymysql 
 from common.config import Config
+from unittest.mock import MagicMock, patch
+from alerting_worker.src.services.alert_engine import AlertEngine
 
 # Adds the project root to sys.path so tests can import source modules
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -90,3 +90,15 @@ def test_service_id(db_connection):
         cursor.execute("SELECT id FROM services WHERE service_name = %s", (service_name,))
         result = cursor.fetchone()
         return result[0]
+    
+@pytest.fixture
+def mock_fetcher():
+    return MagicMock()
+
+@pytest.fixture
+def mock_mailer():
+    return MagicMock()
+
+@pytest.fixture
+def alert_engine(mock_fetcher, mock_mailer):
+    return AlertEngine(mock_fetcher, mock_mailer)

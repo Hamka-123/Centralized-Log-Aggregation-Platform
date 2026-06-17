@@ -11,8 +11,9 @@ A concise step-by-step implementation checklist aligned with the requirements an
 - [x] Use the official `mariadb` image and mount `db/init.sql` into `/docker-entrypoint-initdb.d/`.
 - [x] Add volumes for persistence (`db-data`).
 
-### 2. Database schema
+### 2. Database
 - [x] Complete `db/init.sql`: tables `services`, `logs`, `alerts` with constraints and indexes.
+- [x] Retention Policy
 
 ### 3. Api_Collector (FastAPI) — basic implementation
 - [x] Implement `POST /logs` — accept and persist logs (basic validation).
@@ -80,11 +81,12 @@ A concise step-by-step implementation checklist aligned with the requirements an
 - [ ] Advanced log filtering (time range, regex).
 - [ ] Pagination for GET /logs.
 - [ ] Batch insert for logs (if high volume).
-
+  
 ### Examples & tooling
 - [ ] curl / Postman collection for API.
 - [ ] Docker Compose overrides for dev and prod environments.
 - [ ] Database migrations (Alembic or custom scripts).
+- [ ] Add the maintenance_logs audit table and record the deletion history within the cleanup procedure.
 
 ### Documentation
 - [ ] CHANGELOG.md with versioning.

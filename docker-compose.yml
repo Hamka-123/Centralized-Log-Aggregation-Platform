@@ -2,6 +2,7 @@
 services:
   db:
     image: mariadb:10.11
+    command: --event-scheduler=ON
     container_name: centralized_log_db
     networks:
       - app-network
