@@ -1,0 +1,9 @@
+[mysqld]
+# Enable general log
+general_log = 1
+general_log_file = /var/log/mysql/db.log
+
+# Enable slow query log (useful for debugging performance)
+slow_query_log = 1
+slow_query_log_file = /var/log/mysql/db-slow.log
+long_query_time = 1

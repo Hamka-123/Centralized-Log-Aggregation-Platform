@@ -29,5 +29,6 @@ class Config:
     
     # Logging configuration
     LOG_DIR = os.getenv("LOG_DIR")
-    LOG_MAX_BYTES = int(os.getenv("LOG_MAX_BYTES"))
+    raw_log_bytes = os.getenv("LOG_MAX_BYTES", "5242880")
+    LOG_MAX_BYTES = int(eval(raw_log_bytes))
     LOG_BACKUP_COUNT = int(os.getenv("LOG_BACKUP_COUNT"))

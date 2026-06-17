@@ -1,3 +1,4 @@
+```mermaid
 graph TD
     subgraph "Producer Layer"
         Client[API Client] -->|1. HTTP POST| Collector[API Collector]

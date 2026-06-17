@@ -36,7 +36,7 @@ A concise step-by-step implementation checklist aligned with the requirements an
 - [x] Document required environment variables (DB_*, SMTP_*).
 
 ### 7. Logging
-- [ ] Add `logging` configuration to API and worker (console, INFO level minimum).
+- [x] Add `logging` configuration to API and worker (console, INFO level minimum).
 
 ### 8. Infrastructure scripts
 - [x] Ensure `infra/start.sh`, `stop.sh`, `build.sh` work correctly.

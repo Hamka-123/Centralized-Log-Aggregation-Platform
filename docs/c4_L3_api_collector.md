@@ -1,3 +1,4 @@
+```mermaid
 C4Component
     title Level 3: API Collector Components
 

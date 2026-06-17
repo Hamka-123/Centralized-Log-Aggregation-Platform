@@ -1,3 +1,4 @@
+```mermaid
 classDiagram
     %% Classes and their roles
     class LogController {

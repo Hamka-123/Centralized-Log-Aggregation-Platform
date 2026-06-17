@@ -1,3 +1,4 @@
+```mermaid
 graph TD
     subgraph Host [Docker Host]
         subgraph Network [Docker Bridge Network: app-network]

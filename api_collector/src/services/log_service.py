@@ -1,7 +1,7 @@
 import logging
 
-from src.models.log_model import LogModel
-from src.repositories.log_repository import IRepository
+from ..models.log_model import LogModel
+from ..repositories.log_repository import IRepository
 
 logger = logging.getLogger(__name__)
 class LogService:

@@ -13,13 +13,15 @@ echo -e "${YELLOW}=== STAGE 1: Redeploy ===${NC}"
 echo -e "${YELLOW}=== STAGE 2: Infrastructure Validation ===${NC}"
 ./scripts/check_infra.sh
 
-echo -e "${YELLOW}=== STAGE 3: Functional/Application Tests ===${NC}"
-# Update dependencies to ensure local environment matches project requirements
-echo -e "${YELLOW}--- Installing dependencies...${NC}"
+echo -e "${YELLOW}=== STAGE 3: Installing dependencies ===${NC}"
 pip install -r api_collector/requirements.txt
 pip install -r alerting_worker/requirements.txt
 pip install -r tests/requirements.txt
 
+echo -e "${YELLOW}=== STAGE 4: Log Health Check ===${NC}"
+./scripts/verify_logs.sh
+
+echo -e "${YELLOW}=== STAGE 5: Run application tests ===${NC}"
 # Here we run the rest of the tests (all except for the infra)
 KEEP_INFRA=true pytest -v ./tests/ --ignore=./tests/infra
 

@@ -1,3 +1,4 @@
+```mermaid
 erDiagram
     services ||--o{ logs : "generates"
     logs ||--o{ alerts : "triggers"

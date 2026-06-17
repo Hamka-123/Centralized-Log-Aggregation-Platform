@@ -1,3 +1,4 @@
+```mermaid
 C4Component
     title C4 Level 3: Alerting Worker Components
 

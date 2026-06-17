@@ -1,3 +1,4 @@
+```mermaid
 ---
 title: Data Flow Architecture
 ---

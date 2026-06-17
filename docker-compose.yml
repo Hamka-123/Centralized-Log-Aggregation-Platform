@@ -17,7 +17,8 @@ services:
     volumes:
       - db-data:/var/lib/mysql
       - ./db:/docker-entrypoint-initdb.d:ro
-      - ./logs:${LOG_DIR}
+      - ./db/db_config.cnf:/etc/mysql/conf.d/db_config.cnf:ro
+      - ./logs/db:/var/log/mysql
     ports:
       - "3306:3306"
     healthcheck:
@@ -46,7 +47,7 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - LOG_LEVEL=${LOG_LEVEL}
     volumes:
-      - ./logs:${LOG_DIR}
+      - ./logs:/app/logs
     ports:
       - "8000:8000"
     healthcheck:
@@ -85,7 +86,7 @@ services:
       - LOG_LEVEL=${LOG_LEVEL}
       - PYTHONUNBUFFERED=1
     volumes:
-      - ./logs:${LOG_DIR}
+      - ./logs:/app/logs
     networks:
       - app-network
 
