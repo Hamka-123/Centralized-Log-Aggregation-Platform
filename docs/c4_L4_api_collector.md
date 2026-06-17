@@ -1,40 +1,56 @@
 ```mermaid
 classDiagram
-    %% Classes and their roles
-    class LogController {
+    %% API Layer (api/api_router.py)
+    class APIRouter {
+        +post_log(log: LogModel)
+        +get_logs(service_name, level, limit)
         -service: LogService
-        +create_log(log: LogModel)
     }
 
+    %% Models (models/)
     class LogModel {
         <<pydantic>>
         +service_name: str
         +level: str
         +message: str
     }
-
-    class LogService {
-        -repo: IRepository
-        +process_log(log: LogModel)
-        -analyze_severity(log: LogModel)
+    
+    class ServiceModel {
+        <<pydantic>>
+        +service_name: str
+        +description: str
     }
 
-    class IRepository {
+    %% Service Layer (services/log_service.py)
+    class LogService {
+        -repo: ILogRepository
+        +create_log(log: LogModel)
+        +list_logs(filters)
+    }
+
+    %% Repository Layer (repositories/)
+    class ILogRepository {
         <<interface>>
         +save(log: LogModel)
+        +find_all(filters)
     }
 
-    class MariaDBRepository {
+    class MariaDBLogRepository {
         +save(log: LogModel)
+        +find_all(filters)
+        -db_session: AsyncSession
     }
 
     %% Relationships
-    LogController --> LogService : uses (DI)
-    LogController --> LogModel : validates
-    LogService --> IRepository : composition / uses (DIP)
-    MariaDBRepository ..|> IRepository : implements
+    APIRouter --> LogService : uses
+    LogService --> ILogRepository : depends on (DIP)
+    MariaDBLogRepository ..|> ILogRepository : implements
+    
+    APIRouter ..> LogModel : receives/validates
+    LogService ..> LogModel : processes
+    APIRouter ..> ServiceModel : manages
 
-    %% Explanatory notes
-    note for LogController "Thin controller: HTTP and validation only"
-    note for LogService "Business logic: classification and decision making"
-    note for IRepository "Abstraction: hides database details (Repository Pattern)"
+    %% Notes
+    note for APIRouter "api_router.py: FastAPI Endpoints"
+    note for LogService "log_service.py: Business logic"
+    note for MariaDBLogRepository "log_repository.py: SQLAlchemy/AsyncIO"

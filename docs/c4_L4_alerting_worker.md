@@ -3,7 +3,7 @@ classDiagram
     %% Classes and their responsibilities
     class WorkerLoop {
         -repo: LogRepository
-        -alertService: AlertService
+        -alertEngine: AlertEngine
         +start() void
         -run_loop() void
     }
@@ -13,7 +13,7 @@ classDiagram
         +mark_as_processed(ids: List) void
     }
 
-    class AlertService {
+    class AlertEngine {
         -notifier: INotificationClient
         +analyze_and_alert(logs: List~Log~) void
         -should_alert(log: Log) bool
@@ -31,11 +31,11 @@ classDiagram
 
     %% Relationships
     WorkerLoop --> LogRepository : uses (DI)
-    WorkerLoop --> AlertService : uses (DI)
-    AlertService --> INotificationClient : composition
+    WorkerLoop --> AlertEngine : uses (DI)
+    AlertEngine --> INotificationClient : composition
     SMTPClient ..|> INotificationClient : implements
 
     %% Explanations for relationships
     note for WorkerLoop "Manages timing and lifecycle"
-    note for AlertService "Business logic for filtering and decision making"
+    note for AlertEngine "Business logic for filtering and decision making"
     note for SMTPClient "Implements email sending via SMTP protocol"

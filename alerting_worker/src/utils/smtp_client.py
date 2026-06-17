@@ -15,17 +15,13 @@ class SMTPClient:
         msg['From'] = self.config['USER']
         msg['To'] = self.config['RECIPIENT']
 
-        # 1. Явное приведение порта к int
         server_address = self.config['SERVER']
         server_port = int(self.config['PORT'])
         
         logger.info(f"Connecting to {server_address}:{server_port}...")
 
-        # 2. Инициализация SMTP
-        # Мы убираем 'with' на время отладки, чтобы лучше видеть момент сбоя
         server = smtplib.SMTP(server_address, server_port)
         
-        # 3. ВКЛЮЧАЕМ ОТЛАДКУ (это самое важное!)
         server.set_debuglevel(1) 
         
         try:

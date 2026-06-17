@@ -97,6 +97,7 @@ A concise step-by-step implementation checklist aligned with the requirements an
 ### Frontend
 - [x] Swagger UI
 - [ ] Service status dashboard
+- [ ] start clients
 
 ---
 

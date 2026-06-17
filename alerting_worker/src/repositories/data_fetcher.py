@@ -13,7 +13,12 @@ class DataFetcher:
         try:
             with conn.cursor(pymysql.cursors.DictCursor) as cursor:
                 # We take only those that processed = 0
-                query = "SELECT * FROM logs WHERE processed = 0 AND level IN ('ERROR', 'CRITICAL')"
+                query = """
+                    SELECT l.*, s.service_name 
+                    FROM logs l 
+                    LEFT JOIN services s ON l.service_id = s.id 
+                    WHERE l.processed = 0 AND l.level IN ('ERROR', 'CRITICAL')
+                """
                 cursor.execute(query)
                 logs = cursor.fetchall()
                 logger.info(f"Fetched {len(logs)} logs.")
@@ -35,14 +40,14 @@ class DataFetcher:
         finally:
             conn.close()
 
-    def mark_as_alerted(self, log_id, status='SENT'):
+    def mark_as_alerted(self, log_id, recipient, status='SENT'):
         """Writes the processing result to the alerts table."""
         conn = self.db_factory()
         try:
             with conn.cursor() as cursor:
                 cursor.execute(
-                    "INSERT INTO alerts (log_id, status) VALUES (%s, %s)", 
-                    (log_id, status)
+                    "INSERT INTO alerts (log_id, status, recipient) VALUES (%s, %s, %s)", 
+                    (log_id, status, recipient)
                 )
             conn.commit()
         finally:

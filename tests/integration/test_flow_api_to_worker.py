@@ -24,6 +24,8 @@ def test_log_flow_api_to_worker(db_connection, test_service_id):
     # Use the factory function that creates a NEW connection.
     # This prevents the DataFetcher from closing your shared test connection.
     mock_mailer = MagicMock()
+    mock_mailer.config = {'RECIPIENT': 'test@example.com'}
+    
     fetcher = DataFetcher(get_db_connection)
     engine = AlertEngine(fetcher, mock_mailer)
     
@@ -41,7 +43,7 @@ def test_log_flow_api_to_worker(db_connection, test_service_id):
     
     # Verify that a record was created in the alerts table
     cursor.execute("""
-        SELECT status FROM alerts 
+        SELECT status, recipient FROM alerts 
         WHERE log_id = (SELECT id FROM logs WHERE message = %s)
     """, (test_log["message"],))
     
