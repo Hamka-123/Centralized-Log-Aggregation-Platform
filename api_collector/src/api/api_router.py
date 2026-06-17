@@ -20,11 +20,8 @@ async def create_log(
     service: LogService = Depends(get_log_service)
 ):
     try:
-        # 2. Обязательно добавляем await!
+        # 2. Be sure to add await!
         await service.process_log(log_data)
-        
-        # 3. Внимание: new_log.id больше нет. 
-        # Если нужно вернуть ID, его нужно передать из репозитория/сервиса.
         return {"status": "success", "message": "Log received"}
         
     except Exception as e:
