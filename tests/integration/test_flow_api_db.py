@@ -2,8 +2,9 @@ import pytest
 import pymysql 
 import os
 import requests
+import logging
 
-def test_log_flow_api_to_db(db_connection, test_service_id):
+def test_log_flow_api_to_db( test_service_id):
     # 1. Prepare data
     test_log = {
         "message": "Integration test log",
@@ -15,7 +16,7 @@ def test_log_flow_api_to_db(db_connection, test_service_id):
     response = requests.post("http://localhost:8000/api/logs", json=test_log)
     
     if response.status_code != 201:
-        print(f"\nAPI Error: {response.text}")
+        logging.info(f"\nAPI Error: {response.text}")
     
     assert response.status_code == 201
     

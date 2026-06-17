@@ -9,6 +9,7 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
+      SERVICE_NAME: db
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
@@ -16,6 +17,7 @@ services:
     volumes:
       - db-data:/var/lib/mysql
       - ./db:/docker-entrypoint-initdb.d:ro
+      - ./logs:${LOG_DIR}
     ports:
       - "3306:3306"
     healthcheck:
@@ -36,12 +38,15 @@ services:
       db:
         condition: service_healthy
     environment:
+      - SERVICE_NAME=api
       - DB_HOST=db
       - DB_PORT=3306
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - LOG_LEVEL=${LOG_LEVEL}
+    volumes:
+      - ./logs:${LOG_DIR}
     ports:
       - "8000:8000"
     healthcheck:
@@ -64,6 +69,7 @@ services:
       db:
         condition: service_healthy
     environment:
+      - SERVICE_NAME=worker
       - DB_HOST=db
       - DB_PORT=3306
       - DB_NAME=${DB_NAME}
@@ -78,6 +84,8 @@ services:
       - WORKER_POLLING_INTERVAL=${WORKER_POLLING_INTERVAL}
       - LOG_LEVEL=${LOG_LEVEL}
       - PYTHONUNBUFFERED=1
+    volumes:
+      - ./logs:${LOG_DIR}
     networks:
       - app-network
 

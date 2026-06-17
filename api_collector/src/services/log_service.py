@@ -1,13 +1,16 @@
-from ..models.log_model import LogModel
-from ..repositories.log_repository import IRepository
+import logging
 
+from src.models.log_model import LogModel
+from src.repositories.log_repository import IRepository
+
+logger = logging.getLogger(__name__)
 class LogService:
     def __init__(self, repository: IRepository):
         self.repository = repository
 
     async def process_log(self, log: LogModel):
         if self.analyze_severity(log):
-            print(f"CRITICAL LOG DETECTED: {log.message}")
+            logger.info(f"CRITICAL LOG DETECTED: {log.message}")
         
         log_data = {
             "message": log.message,

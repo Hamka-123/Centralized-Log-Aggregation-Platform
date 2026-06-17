@@ -12,7 +12,7 @@ class Config:
     DB_PASSWORD = os.getenv("DB_PASSWORD", "password")
     DB_NAME = os.getenv("DB_NAME", "app_db")
     
-    # Infrastructure Control
+    # Infrastructure Control for tests
     # 'true' / 'false' handling via string comparison
     KEEP_INFRA = os.getenv("KEEP_INFRA", "false").lower() == "true"
     
@@ -20,10 +20,14 @@ class Config:
     POLLING_INTERVAL = int(os.getenv("WORKER_POLLING_INTERVAL", "60"))
     WORKER_MAX_THREADS = int(os.getenv("WORKER_THREADS", "5"))
     
-    
     # SMTP Configuration
     SMTP_SERVER = os.getenv("SMTP_HOST", "localhost")
     SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
     SMTP_USER = os.getenv("SMTP_USER", "user")
     SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "password")
     EMAIL_TO = os.getenv("ALERT_RECIPIENT", "email")
+    
+    # Logging configuration
+    LOG_DIR = os.getenv("LOG_DIR")
+    LOG_MAX_BYTES = int(os.getenv("LOG_MAX_BYTES"))
+    LOG_BACKUP_COUNT = int(os.getenv("LOG_BACKUP_COUNT"))

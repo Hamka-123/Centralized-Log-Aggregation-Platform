@@ -5,3 +5,4 @@ python-dotenv
 pymysql
 httpx
 pytest-asyncio
+logging

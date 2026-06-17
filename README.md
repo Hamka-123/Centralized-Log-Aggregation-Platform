@@ -125,17 +125,6 @@ Before launching, duplicate `.env_template` as `.env` and populate the required 
 cp .env_template .env
 ```
 
-Edit `.env` with your credentials:
-- `DB_HOST`: Database host (default: `db`)
-- `DB_PORT`: Database port (default: `3306`)
-- `DB_USER`: Database user
-- `DB_PASSWORD`: Database password
-- `DB_NAME`: Database name
-- `SMTP_SERVER`: SMTP server address (e.g., `smtp.gmail.com`)
-- `SMTP_PORT`: SMTP port (e.g., `587`)
-- `SMTP_USER`: Email address for sending alerts
-- `SMTP_PASSWORD`: SMTP password or app-specific token
-
 #### 2. Deployment Methods
 
 **Method 1: Docker Compose (Recommended for Development)**
@@ -160,7 +149,7 @@ For specific image build stages or production deployments, use the provided scri
 # Stop services
 ./scripts/stop.sh
 
-# Full redeploy
+# Full redeploy with cleaning cache
 ./scripts/redeploy.sh
 
 # Run full pipeline with tests
@@ -197,56 +186,16 @@ http://localhost:8000/docs
 GET /health
 ```
 
-Response:
-```json
-{
-  "status": "ok",
-  "version": "1.0.0"
-}
-```
-
 #### Submit Log Entry
 ```http
 POST /logs
 Content-Type: application/json
 ```
 
-Request body:
-```json
-{
-  "message": "Application started successfully",
-  "level": "INFO",
-  "service_name": "api_service",
-  "timestamp": "2024-01-01T12:00:00Z"
-}
-```
-
 #### Retrieve Logs
 ```http
 GET /logs?service_name=api_service&level=ERROR&limit=100
 ```
-
-Query parameters:
-- `service_name` (optional): Filter by service
-- `level` (optional): Filter by log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-- `limit` (optional): Maximum number of results (default: 100)
-
-Response:
-```json
-{
-  "logs": [
-    {
-      "id": 1,
-      "message": "Error occurred",
-      "level": "ERROR",
-      "service_name": "api_service",
-      "timestamp": "2024-01-01T12:00:00Z"
-    }
-  ],
-  "total": 1
-}
-```
-
 ---
 
 ## ⚙️ Configuration
@@ -360,36 +309,5 @@ docker compose logs -f db
 
 # Follow all logs
 docker compose logs -f
-```
-
----
-
-## 🐛 Troubleshooting
-
-### Database Connection Issues
-```bash
-# Check database connectivity
-python scripts/debug_db.py
-
-# View database logs
-docker compose logs db
-```
-
-### API Not Responding
-```bash
-# Check API health
-curl http://localhost:8000/health
-
-# Check API logs
-docker compose logs api_collector
-```
-
-### Worker Not Processing Alerts
-```bash
-# Check worker logs
-docker compose logs alerting_worker
-
-# Verify database has ERROR/CRITICAL logs
-curl http://localhost:8000/logs?level=ERROR
 ```
 

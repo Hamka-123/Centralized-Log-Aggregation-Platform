@@ -1,3 +1,4 @@
+import logging
 import docker
 import pytest
 import subprocess
@@ -7,6 +8,8 @@ import pymysql
 from common.config import Config
 from unittest.mock import MagicMock, patch
 from alerting_worker.src.services.alert_engine import AlertEngine
+
+logger = logging.getLogger(__name__)
 
 # Adds the project root to sys.path so tests can import source modules
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -26,9 +29,9 @@ def setup_infrastructure():
     """
     keep_infra = Config.KEEP_INFRA if hasattr(Config, 'KEEP_INFRA') else False
     if keep_infra:
-        print("\n--- KEEP_INFRA=true detected. Skipping startup. ---")
+        logger.info("\n--- KEEP_INFRA=true detected. Skipping startup. ---")
     else:
-        print("\n--- Starting Docker Compose ---")
+        logger.info("\n--- Starting Docker Compose ---")
         subprocess.run(["docker", "compose", "up", "-d"], check=True)
     
     yield
@@ -63,7 +66,7 @@ def seed_test_data(db_connection):
         result = cursor.fetchone()
 
         if not result:
-            print(f"\n--- Seeding test service: {service_name} ---")
+            logger.info(f"\n--- Seeding test service: {service_name} ---")
             cursor.execute(
                 "INSERT INTO services (service_name, description) VALUES (%s, %s)",
                 (service_name, "Integration test service")

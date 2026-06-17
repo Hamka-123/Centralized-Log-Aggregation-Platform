@@ -12,14 +12,6 @@ tests/
 ├── infra/            # Infrastructure smoke tests
 └── conftest.py       # Shared fixtures for Docker orchestration and database sessions
 ```
-
-### Test Categories
-
-* **/unit** — unit tests for the `api_collector` and `alerting_worker`.
-* **/api** — integration tests for the API (`api_collector`).
-* **/integration** — end-to-end integration tests validating the complete flow from API requests to database persistence.
-* **/infra** — smoke tests for validating Docker configuration, container startup, and service health.
-
 ---
 
 ## Getting Started
@@ -304,6 +296,38 @@ Whenever possible:
 This ensures complete end-to-end coverage of the platform's behavior.
 
 ---
+# Logging & Debugging
+
+The platform uses centralized logging. During testing, log outputs are a primary tool for diagnosing failures.
+
+## Log Location
+
+All logs are written to the `./logs` directory on the host machine.
+
+When running tests with Docker orchestration, ensure this directory is accessible.
+
+### Log Files
+
+- **api.log** — API activity and request/response cycles.
+- **worker.log** — Background task processing and alert engine activity.
+
+## Enabling Verbose Logs in Tests
+
+`pytest` captures standard output by default. To display logging output directly in the console during test execution, use the `--log-cli-level` flag.
+
+### Show INFO-Level Logs
+
+```bash
+pytest --log-cli-level=INFO
+```
+
+### Show DEBUG-Level Logs
+
+Useful for deep troubleshooting:
+
+```bash
+pytest --log-cli-level=DEBUG
+```
 
 ## Pre-Commit Checklist
 

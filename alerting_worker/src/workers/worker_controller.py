@@ -1,5 +1,8 @@
 import time
+import logging
 from concurrent.futures import ThreadPoolExecutor
+
+logger = logging.getLogger(__name__)
 class WorkerController:
     def __init__(self, engine, config):
         self.engine = engine
@@ -7,7 +10,7 @@ class WorkerController:
         self.max_workers = config.WORKER_MAX_THREADS
 
     def start(self):
-        print(f"Alert Worker started with {self.max_workers} threads...")
+        logger.info(f"Alert Worker started with {self.max_workers} threads...")
     
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             while True:

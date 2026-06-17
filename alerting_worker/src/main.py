@@ -1,4 +1,6 @@
 import logging
+from common.logging_setup import setup_logging
+
 from common.config import Config
 from src.db_sync import get_db_connection
 
@@ -7,7 +9,8 @@ from src.utils.smtp_client import SMTPClient
 from src.services.alert_engine import AlertEngine
 from src.workers.worker_controller import WorkerController
 
-logging.basicConfig(level=logging.INFO)
+# Initialize centralized logging for the Worker service
+setup_logging("worker")
 logger = logging.getLogger(__name__)
 
 def main():
@@ -34,7 +37,7 @@ def main():
     try:
         controller.start()
     except KeyboardInterrupt:
-        print("Worker stopped manually.")
+        logger.info("Worker stopped manually.")
 
 if __name__ == "__main__":
     main()

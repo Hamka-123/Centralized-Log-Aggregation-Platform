@@ -1,5 +1,6 @@
 import pytest
 from datetime import datetime
+import logging
 
 def test_event_scheduler_configuration(db_connection):
     """
@@ -21,11 +22,11 @@ def test_event_scheduler_configuration(db_connection):
     assert event is not None, "Retention event 'purge_old_logs' not found!"
     
     # Print schedule info to console so you can see it
-    print(f"\n--- Retention Policy Schedule ---")
-    print(f"Event Name: {event[1]}")
-    print(f"Starts at: {event[6]}") # Время первого запуска
-    print(f"Status: {event[8]}")    # ENABLED или DISABLED
-    print(f"---------------------------------")
+    logging.info(f"\n--- Retention Policy Schedule ---")
+    logging.info(f"Event Name: {event[1]}")
+    logging.info(f"Starts at: {event[6]}") 
+    logging.info(f"Status: {event[8]}")  
+    logging.info(f"---------------------------------")
     
 def test_retention_procedure_execution(db_connection, test_service_id):
     """

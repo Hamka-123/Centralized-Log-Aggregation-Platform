@@ -1,7 +1,10 @@
-import aiomysql
-from common.config import Config # Import the centralized Config class
+import logging
 
-# Configuration for the database pool using the Config class
+import aiomysql
+from common.config import Config 
+
+logger = logging.getLogger(__name__)
+
 db_config = {
     'host': Config.DB_HOST,
     'port': Config.DB_PORT,
@@ -16,9 +19,8 @@ db_pool = None
 async def init_db_pool():
     """Initializing the connection pool when the application starts."""
     global db_pool
-    # Create the pool using the updated configuration
     db_pool = await aiomysql.create_pool(**db_config)
-    print("Database pool initialized successfully.")
+    logger.info("Database pool initialized successfully.")
 
 async def close_db_pool():
     """Closing the pool when the application stops."""
@@ -26,7 +28,7 @@ async def close_db_pool():
     if db_pool:
         db_pool.close()
         await db_pool.wait_closed()
-        print("Database pool closed.")
+        logger.info("Database pool closed.")
 
 async def get_db():
     """Generator for obtaining a connection from the pool."""
