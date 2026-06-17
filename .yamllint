@@ -3,7 +3,7 @@ extends: default
 
 rules:
   line-length:
-    max: 120  # Увеличиваем лимит, так как Docker-команды бывают длинными
+    max: 120  
     level: error
   document-start:
     present: true

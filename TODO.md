@@ -60,7 +60,7 @@ A concise step-by-step implementation checklist aligned with the requirements an
 ### Tests & validation
 - [ ] Unit tests for worker and API logic (pytest).
 - [x] Integration/smoke tests: `docker compose up` + smoke requests.
-- [] Testcontainers for real DB testing.
+- [ ] Testcontainers for real DB testing.
 - [x] Infrastructure and script testing (linting, smoke testing)
 
 ### CI / CD
