@@ -13,9 +13,13 @@ CREATE TABLE logs (
     level VARCHAR(10) NOT NULL,
     message TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    processed TINYINT(1) DEFAULT 0, -- 0 = not processed, 1 = processed
     FOREIGN KEY (service_id) REFERENCES services(id),
+    
+    -- Indexes to speed up work
     INDEX idx_service_level (service_id, level),
-    INDEX idx_created_at (created_at)
+    INDEX idx_created_at (created_at),
+    INDEX idx_processed (processed)
 ) ENGINE=InnoDB;
 
 -- Create alerts table

@@ -26,8 +26,8 @@ services:
 
   api_collector:
     build:
-      context: ./api_collector
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: api_collector/Dockerfile
     container_name: centralized_log_api
     restart: unless-stopped
     env_file: .env
@@ -54,8 +54,8 @@ services:
 
   alerting_worker:
     build:
-      context: ./alerting_worker
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: alerting_worker/Dockerfile
     container_name: centralized_log_worker
     restart: unless-stopped
     env_file: .env
@@ -73,7 +73,8 @@ services:
       - SMTP_USER=${SMTP_USER}
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - ALERT_RECIPIENT=${ALERT_RECIPIENT}
-      - POLL_INTERVAL=${POLL_INTERVAL}
+      - WORKER_MAX_THREADS=${WORKER_THREADS}
+      - WORKER_POLLING_INTERVAL=${WORKER_POLLING_INTERVAL}
       - LOG_LEVEL=${LOG_LEVEL}
       - PYTHONUNBUFFERED=1
     networks:

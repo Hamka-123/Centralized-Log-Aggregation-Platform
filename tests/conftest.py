@@ -6,9 +6,7 @@ import requests
 import os
 import sys
 import pymysql 
-from dotenv import load_dotenv
-
-load_dotenv()
+from common.config import Config
 
 # Adds the project root to sys.path so tests can import source modules
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -26,7 +24,7 @@ def setup_infrastructure():
     """
     Setup test-infra fixture
     """
-    keep_infra = os.getenv("KEEP_INFRA", "false").lower() == "true"
+    keep_infra = Config.KEEP_INFRA if hasattr(Config, 'KEEP_INFRA') else False
     if keep_infra:
         print("\n--- KEEP_INFRA=true detected. Skipping startup. ---")
     else:
@@ -40,15 +38,14 @@ def setup_infrastructure():
 @pytest.fixture(scope="session")
 def db_connection():
     """
-    Database connection fixture
-    Creates a raw connection to the database via pymysql.
+    Creates a raw connection to the database using shared Config.
     """
     conn = pymysql.connect(
-        host="localhost",
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-        database=os.getenv("DB_NAME"),
-        port=int(os.getenv("DB_PORT", "3306")),
+        host=Config.DB_HOST,
+        user=Config.DB_USER,
+        password=Config.DB_PASSWORD,
+        database=Config.DB_NAME,
+        port=Config.DB_PORT,
         autocommit=True 
     )
     yield conn

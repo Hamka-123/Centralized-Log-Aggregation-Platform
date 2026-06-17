@@ -1,0 +1,40 @@
+import smtplib
+from email.message import EmailMessage
+import logging
+
+logger = logging.getLogger(__name__)
+
+class SMTPClient:
+    def __init__(self, config):
+        self.config = config
+
+    def send(self, subject, body):
+        msg = EmailMessage()
+        msg.set_content(body)
+        msg['Subject'] = subject
+        msg['From'] = self.config['USER']
+        msg['To'] = self.config['RECIPIENT']
+
+        # 1. Явное приведение порта к int
+        server_address = self.config['SERVER']
+        server_port = int(self.config['PORT'])
+        
+        logger.info(f"Connecting to {server_address}:{server_port}...")
+
+        # 2. Инициализация SMTP
+        # Мы убираем 'with' на время отладки, чтобы лучше видеть момент сбоя
+        server = smtplib.SMTP(server_address, server_port)
+        
+        # 3. ВКЛЮЧАЕМ ОТЛАДКУ (это самое важное!)
+        server.set_debuglevel(1) 
+        
+        try:
+            server.starttls()
+            server.login(self.config['USER'], self.config['PASSWORD'])
+            server.send_message(msg)
+            logger.info("Email sent successfully!")
+        except Exception as e:
+            logger.error(f"SMTP Error details: {e}")
+            raise e
+        finally:
+            server.quit()

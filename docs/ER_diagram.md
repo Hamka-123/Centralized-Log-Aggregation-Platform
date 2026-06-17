@@ -14,6 +14,7 @@ erDiagram
         varchar(10) level
         text message
         timestamp created_at
+        tinyint processed "DEFAULT 0"
     }
 
     alerts {

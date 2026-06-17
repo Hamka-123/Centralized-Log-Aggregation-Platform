@@ -21,6 +21,6 @@ pip install -r alerting_worker/requirements.txt
 pip install -r tests/requirements.txt
 
 # Here we run the rest of the tests (all except for the infra)
-KEEP_INFRA=true pytest ./tests/ --ignore=./tests/infra
+KEEP_INFRA=true pytest -v ./tests/ --ignore=./tests/infra
 
 echo -e "${GREEN}=== All pipelines passed successfully! ===${NC}"

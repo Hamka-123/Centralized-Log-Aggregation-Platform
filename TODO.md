@@ -20,10 +20,10 @@ A concise step-by-step implementation checklist aligned with the requirements an
 - [x] Implement `/health` endpoint.
 
 ### 4. Alerting_Worker — core functionality
-- [ ] Implement the worker: DB connection, fetch unprocessed entries (ERROR/CRITICAL).
-- [ ] Basic SMTP integration: send email, handle errors.
-- [ ] Mark entries as alerted (table `alerts`).
-- [ ] Configure via environment variables and polling interval.
+- [x] Implement the worker: DB connection, fetch unprocessed entries (ERROR/CRITICAL).
+- [x] Basic SMTP integration: send email, handle errors.
+- [x] Mark entries as alerted (table `alerts`).
+- [x] Configure via environment variables and polling interval.
 
 ### 5. Containerization
 - [x] Complete `Dockerfile` for `Api_Collector` and `Alerting_Worker` (python:3.11-slim).

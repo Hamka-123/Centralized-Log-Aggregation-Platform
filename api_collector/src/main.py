@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from .api.api_router import router
 from .api.api_router_services import router_services
-from .database import init_db_pool, close_db_pool 
+from .db_async import init_db_pool, close_db_pool 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

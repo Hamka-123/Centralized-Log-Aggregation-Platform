@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from ..models.log_model import LogModel
-from ..database import get_db
+from ..db_async import get_db
 from ..services.log_service import LogService
 from ..repositories.log_repository import MariaDBRepository
 
