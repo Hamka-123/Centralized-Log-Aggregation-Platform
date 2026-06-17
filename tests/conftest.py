@@ -4,10 +4,14 @@ import subprocess
 import time
 import requests
 import os
+import sys
 import pymysql 
 from dotenv import load_dotenv
 
 load_dotenv()
+
+# Adds the project root to sys.path so tests can import source modules
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 @pytest.fixture(scope="session")
 def docker_client():

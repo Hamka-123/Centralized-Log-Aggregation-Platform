@@ -20,7 +20,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo -e "${YELLOW}--- Starting containers..."
-docker compose up -d --force-recreate
+docker compose up -d --build --force-recreate
 
 echo -e "${GREEN}--- Deployment finished successfully! ---${NC}"
 docker compose ps
