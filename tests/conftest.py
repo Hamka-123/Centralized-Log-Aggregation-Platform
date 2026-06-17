@@ -9,15 +9,19 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Создает объект клиента Docker, который позволяет управлять контейнерами прямо из кода тестов (через библиотеку docker-py).
 @pytest.fixture(scope="session")
 def docker_client():
+    """
+    Creates a Docker client object that allows you to manage 
+    containers directly from your test code (via the docker-py library).
+    """
     return docker.from_env()
 
-# Setup-фикстура
 @pytest.fixture(scope="session", autouse=True)
 def setup_infrastructure():
-    # ... (код запуска инфраструктуры можно оставить без изменений) ...
+    """
+    Setup test-infra fixture
+    """
     keep_infra = os.getenv("KEEP_INFRA", "false").lower() == "true"
     if keep_infra:
         print("\n--- KEEP_INFRA=true detected. Skipping startup. ---")
@@ -29,11 +33,11 @@ def setup_infrastructure():
     if not keep_infra:
         subprocess.run(["docker", "compose", "down"], check=True)
 
-# фикстура подключения к бд
 @pytest.fixture(scope="session")
 def db_connection():
     """
-    Создает чистое соединение с базой через pymysql.
+    Database connection fixture
+    Creates a raw connection to the database via pymysql.
     """
     conn = pymysql.connect(
         host="localhost",
@@ -41,18 +45,19 @@ def db_connection():
         password=os.getenv("DB_PASSWORD"),
         database=os.getenv("DB_NAME"),
         port=int(os.getenv("DB_PORT", "3306")),
-        autocommit=True # Сразу коммитит изменения
+        autocommit=True 
     )
     yield conn
     conn.close()
 
-# Фикстура для наполнения данными
 @pytest.fixture(scope="session", autouse=True)
 def seed_test_data(db_connection):
+    """
+    Fixture for filling with data
+    """
     service_name = "test-service"
     
     with db_connection.cursor() as cursor:
-        # Проверяем, существует ли сервис
         cursor.execute("SELECT id FROM services WHERE service_name = %s", (service_name,))
         result = cursor.fetchone()
 
@@ -64,9 +69,12 @@ def seed_test_data(db_connection):
             )
     yield
 
-# Фикстура получения ID сервиса
+
 @pytest.fixture(scope="session")
 def test_service_id(db_connection):
+    """
+    Fixture for obtaining service ID
+    """
     service_name = "test-service"
     with db_connection.cursor() as cursor:
         cursor.execute("SELECT id FROM services WHERE service_name = %s", (service_name,))
@@ -74,7 +82,6 @@ def test_service_id(db_connection):
         if result:
             return result[0]
             
-        # Если не нашли, создаем
         cursor.execute(
             "INSERT INTO services (service_name, description) VALUES (%s, %s)",
             (service_name, "Created by test fixture")

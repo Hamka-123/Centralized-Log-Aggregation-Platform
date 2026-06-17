@@ -20,18 +20,18 @@ check_module() {
     local name=$2
     echo -e "${YELLOW}--- Validating $name ($dir) ---${NC}"
     
-    # 1. Проверка наличия Dockerfile
+    # 1. Check for Dockerfile
     if [ ! -f "$dir/Dockerfile" ]; then
         echo -e "${RED}Error: Dockerfile not found in $dir${NC}"
         exit 1
     fi
     
-    # 2. Проверка наличия зависимостей
+    # 2. Check for dependencies
     if [ -f "$dir/requirements.txt" ]; then
         echo "Found requirements.txt, checking dependencies..."
     fi
 
-    # 3. Верификация синтаксиса
+    # 3. Verify syntax
     echo "Running syntax check for $name..."
     docker build --check "$dir" > /dev/null
 

@@ -76,8 +76,6 @@ services:
       - POLL_INTERVAL=${POLL_INTERVAL}
       - LOG_LEVEL=${LOG_LEVEL}
       - PYTHONUNBUFFERED=1
-    #   - PYTHONPATH=/app
-    # command: python -u -m src.worker_controller
     networks:
       - app-network
 

@@ -8,13 +8,13 @@ class Settings(BaseSettings):
     DB_PASSWORD: str = "password"
     DB_NAME: str = "logs_db"
 
-    # SMTP (для алертов)
+    # SMTP (for alerts)
     SMTP_SERVER: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
     SMTP_USER: str = "your_email@example.com"
     SMTP_PASSWORD: str = "your_password"
 
     class Config:
-        env_file = ".env" # Автоматически читает твой файл .env
+        env_file = ".env" # Automatically reads your .env file
 
 settings = Settings()
