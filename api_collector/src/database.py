@@ -16,12 +16,12 @@ db_config = {
 db_pool = None
 
 async def init_db_pool():
-    """Инициализация пула соединений при запуске приложения."""
+    """Initializing the connection pool when the application starts."""
     global db_pool
     db_pool = await aiomysql.create_pool(**db_config)
 
 async def close_db_pool():
-    """Закрытие пула при остановке приложения."""
+    """Closing the pool when the application stops."""
     global db_pool
     if db_pool:
         db_pool.close()
@@ -29,8 +29,7 @@ async def close_db_pool():
 
 async def get_db():
     """
-    Генератор для получения соединения из пула.
-    Вместо Session (ORM) мы отдаем чистый объект подключения (conn).
+    A generator for obtaining a connection from the pool.
     """
     global db_pool
     async with db_pool.acquire() as conn:

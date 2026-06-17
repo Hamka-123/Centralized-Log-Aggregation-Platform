@@ -1,10 +1,10 @@
 import logging
 import aiomysql
-from .interfaces import IRepository
+from .interfaces import IRepository, IServiceRepository
 
 logger = logging.getLogger(__name__)
 
-class MariaDBRepository(IRepository):
+class MariaDBRepository(IRepository, IServiceRepository):
     def __init__(self, connection: aiomysql.Connection):
         self.conn = connection
 
@@ -27,7 +27,7 @@ class MariaDBRepository(IRepository):
             
         except Exception as e:
             logger.error(f"Database error: {e}")
-            # Here you can do await self.connection.rollback() if needed
+            # Here can do await self.connection.rollback() if needed
             raise e
     
     async def get_logs(self, service_name: str = None, level: str = None, limit: int = 100):
@@ -55,10 +55,18 @@ class MariaDBRepository(IRepository):
         async with self.conn.cursor(aiomysql.cursors.DictCursor) as cursor:
             await cursor.execute(query, params)
             return await cursor.fetchall()
-        
+
     async def get_service_name_by_id(self, service_id: int):
         query = "SELECT service_name FROM services WHERE id = %s"
         async with self.conn.cursor(aiomysql.cursors.DictCursor) as cursor:
             await cursor.execute(query, (service_id,))
             result = await cursor.fetchone()
             return result['service_name'] if result else None
+        
+    async def add_service(self, service_name: str, description: str | None):
+        query = "INSERT INTO services (service_name, description) VALUES (%s, %s)"
+        
+        async with self.conn.cursor() as cursor:
+            await cursor.execute(query, (service_name, description))
+            await self.conn.commit()
+            return cursor.lastrowid
