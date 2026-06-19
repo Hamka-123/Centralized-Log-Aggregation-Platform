@@ -8,3 +8,4 @@ TODO_ru.md
 *.log
 src/logs/*.log
 *requirements_backup.txt
+/logs/*

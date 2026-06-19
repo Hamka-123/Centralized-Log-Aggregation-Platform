@@ -32,7 +32,7 @@ def setup_infrastructure():
         logger.info("\n--- KEEP_INFRA=true detected. Skipping startup. ---")
     else:
         logger.info("\n--- Starting Docker Compose ---")
-        subprocess.run(["docker", "compose", "up", "-d"], check=True)
+        subprocess.run(["docker", "compose", "up", "-d", "db", "api_collector", "alerting_worker"], check=True)
     
     yield
     if not keep_infra:

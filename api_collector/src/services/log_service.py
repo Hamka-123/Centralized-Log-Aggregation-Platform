@@ -10,7 +10,7 @@ class LogService:
 
     async def process_log(self, log: LogModel):
         if self.analyze_severity(log):
-            logger.info(f"CRITICAL LOG DETECTED: {log.message}")
+            logger.info(f"{log.level} LOG DETECTED: {log.message}")
         
         log_data = {
             "message": log.message,
