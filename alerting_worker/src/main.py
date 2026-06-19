@@ -31,13 +31,9 @@ def main():
     mailer = SMTPClient(smtp_config)
     engine = AlertEngine(fetcher, mailer)
     
-    # 3. Start
+    # 3. Start (graceful shutdown is handled inside WorkerController via signal handlers)
     controller = WorkerController(engine, config)
-    
-    try:
-        controller.start()
-    except KeyboardInterrupt:
-        logger.info("Worker stopped manually.")
+    controller.start()
 
 if __name__ == "__main__":
     main()

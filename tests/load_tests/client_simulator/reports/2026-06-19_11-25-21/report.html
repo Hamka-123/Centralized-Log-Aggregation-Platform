@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: sans-serif; margin: 40px; background: #f4f7f6; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 12px; }
+        th { background-color: #2c3e50; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Load Test Report: 2026-06-19_11-25-21</h1>
+    <div class='card'><h2>Baseline (Before Load)</h2><table><tr><th>Name</th><th>CPU</th><th>Mem</th></tr><tr><td>centralized_log_worker</td><td>0.00%</td><td>15.76MiB / 7.653GiB</td></tr>
+<tr><td>centralized_log_api</td><td>0.39%</td><td>34.49MiB / 7.653GiB</td></tr>
+<tr><td>centralized_log_db</td><td>0.04%</td><td>130.5MiB / 7.653GiB</td></tr>
+<tr><td>mailhog</td><td>0.00%</td><td>18.46MiB / 7.653GiB</td></tr>
+<tr><td>secure-corp-registry</td><td>0.36%</td><td>30.91MiB / 7.653GiB</td></tr>
+</table></div><div class='card'><h2>Peak Load</h2><table><tr><th>Name</th><th>CPU</th><th>Mem</th></tr><tr><td>centralized-log-aggregation-platform-log-client-2</td><td>0.84%</td><td>20.77MiB / 7.653GiB</td></tr>
+<tr><td>centralized-log-aggregation-platform-log-client-7</td><td>0.96%</td><td>18.38MiB / 7.653GiB</td></tr>
+<tr><td>centralized-log-aggregation-platform-log-client-4</td><td>0.85%</td><td>18.35MiB / 7.653GiB</td></tr>
+<tr><td>centralized-log-aggregation-platform-log-client-9</td><td>0.84%</td><td>18.35MiB / 7.653GiB</td></tr>
+<tr><td>centralized-log-aggregation-platform-log-client-1</td><td>0.81%</td><td>18.36MiB / 7.653GiB</td></tr>
+<tr><td>centralized-log-aggregation-platform-log-client-8</td><td>0.84%</td><td>18.36MiB / 7.653GiB</td></tr>
+<tr><td>centralized-log-aggregation-platform-log-client-3</td><td>0.92%</td><td>18.36MiB / 7.653GiB</td></tr>
+<tr><td>centralized-log-aggregation-platform-log-client-10</td><td>0.84%</td><td>18.35MiB / 7.653GiB</td></tr>
+<tr><td>centralized-log-aggregation-platform-log-client-6</td><td>0.90%</td><td>18.35MiB / 7.653GiB</td></tr>
+<tr><td>centralized-log-aggregation-platform-log-client-5</td><td>0.97%</td><td>18.61MiB / 7.653GiB</td></tr>
+<tr><td>centralized_log_worker</td><td>78.48%</td><td>22.64MiB / 7.653GiB</td></tr>
+<tr><td>centralized_log_api</td><td>19.39%</td><td>37.24MiB / 7.653GiB</td></tr>
+<tr><td>centralized_log_db</td><td>9.53%</td><td>137.6MiB / 7.653GiB</td></tr>
+<tr><td>mailhog</td><td>15.53%</td><td>40.23MiB / 7.653GiB</td></tr>
+<tr><td>secure-corp-registry</td><td>0.00%</td><td>30.91MiB / 7.653GiB</td></tr>
+</table></div><div class='card'><h2>Database Metrics</h2><pre>total_logs
+5330
+service_id	log_count
+1	5330
+processed	count
+0	5063
+1	267
+</pre></div><div class='card'><h2>After Load (Recovery)</h2><table><tr><th>Name</th><th>CPU</th><th>Mem</th></tr><tr><td>centralized_log_worker</td><td>78.92%</td><td>23.37MiB / 7.653GiB</td></tr>
+<tr><td>centralized_log_api</td><td>0.08%</td><td>36.92MiB / 7.653GiB</td></tr>
+<tr><td>centralized_log_db</td><td>6.37%</td><td>140.3MiB / 7.653GiB</td></tr>
+<tr><td>mailhog</td><td>11.26%</td><td>160.8MiB / 7.653GiB</td></tr>
+<tr><td>secure-corp-registry</td><td>0.00%</td><td>30.91MiB / 7.653GiB</td></tr>
+</table></div>
+</body>
+</html>

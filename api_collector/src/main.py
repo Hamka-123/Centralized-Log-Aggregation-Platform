@@ -6,7 +6,8 @@ from fastapi import FastAPI
 
 from .api.api_router import router
 from .api.api_router_services import router_services
-from .db_async import init_db_pool, close_db_pool 
+from .db_async import init_db_pool, close_db_pool
+from .middleware.logging_middleware import RequestLoggingMiddleware
 
 
 # Initialize centralized logging for the API service
@@ -27,6 +28,9 @@ async def lifespan(app: FastAPI):
 
 # Pass the lifespan to the FastAPI constructor
 app = FastAPI(title="Log Collector API", lifespan=lifespan)
+
+# Add request/response logging middleware (before routes)
+app.add_middleware(RequestLoggingMiddleware)
 
 app.include_router(router)
 app.include_router(router_services)
