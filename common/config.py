@@ -5,16 +5,17 @@ load_dotenv()
 
 class Config:
     # Database Configuration
-    # Providing defaults here prevents 'None' values and makes local dev easier
     DB_HOST = os.getenv("DB_HOST")
     DB_PORT = int(os.getenv("DB_PORT", "3306"))
+    DB_NAME = os.getenv("DB_NAME")
+    DB_ROOT_PASSWORD = os.getenv("DB_ROOT_PASSWORD")
     DB_USER = os.getenv("DB_USER", "root")
     DB_PASSWORD = os.getenv("DB_PASSWORD", "password")
-    DB_NAME = os.getenv("DB_NAME", "app_db")
     
     # Infrastructure Control for tests
-    # 'true' / 'false' handling via string comparison
     KEEP_INFRA = os.getenv("KEEP_INFRA", "false").lower() == "true"
+    # Added explicit boolean conversion for SMTP disabling
+    DISABLE_SMTP = os.getenv("DISABLE_SMTP", "false").lower() == "true"
     
     # Worker Configuration
     POLLING_INTERVAL = int(os.getenv("WORKER_POLLING_INTERVAL", "60"))
@@ -28,7 +29,7 @@ class Config:
     EMAIL_TO = os.getenv("ALERT_RECIPIENT", "email")
     
     # Logging configuration
-    LOG_DIR = os.getenv("LOG_DIR")
-    raw_log_bytes = os.getenv("LOG_MAX_BYTES", "5242880")
-    LOG_MAX_BYTES = int(eval(raw_log_bytes))
-    LOG_BACKUP_COUNT = int(os.getenv("LOG_BACKUP_COUNT"))
+    LOG_DIR = os.getenv("LOG_DIR", "./logs")
+    # Safer conversion to int without eval()
+    LOG_MAX_BYTES = int(os.getenv("LOG_MAX_BYTES", "5242880"))
+    LOG_BACKUP_COUNT = int(os.getenv("LOG_BACKUP_COUNT", "3"))

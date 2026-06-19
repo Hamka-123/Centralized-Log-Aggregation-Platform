@@ -9,6 +9,9 @@ class SMTPClient:
         self.config = config
 
     def send(self, subject, body):
+        if str(self.config.get("DISABLE_SMTP", "false")).lower() in ["true", "1"]:
+            logger.info(f"[MOCK] SMTP disabled. Skipping email: {subject}")
+            return True
         msg = EmailMessage()
         msg.set_content(body)
         msg['Subject'] = subject
@@ -25,8 +28,9 @@ class SMTPClient:
         server.set_debuglevel(1) 
         
         try:
-            server.starttls()
-            server.login(self.config['USER'], self.config['PASSWORD'])
+            if server_address != "mailhog":
+                server.starttls()
+                server.login(self.config['USER'], self.config['PASSWORD'])
             server.send_message(msg)
             logger.info("Email sent successfully!")
         except Exception as e:
