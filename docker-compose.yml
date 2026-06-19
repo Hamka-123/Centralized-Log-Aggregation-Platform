@@ -85,8 +85,26 @@ services:
       - WORKER_POLLING_INTERVAL=${WORKER_POLLING_INTERVAL}
       - LOG_LEVEL=${LOG_LEVEL}
       - PYTHONUNBUFFERED=1
+      - DISABLE_SMTP=${DISABLE_SMTP}
     volumes:
       - ./logs:/app/logs
+    networks:
+      - app-network
+  # for load test:
+  log-client:
+    build: ./tests/load_tests/client_simulator
+    environment:
+      - SERVICE_TYPE=client
+      - REPLICA_INDEX=${REPLICA_INDEX}
+    networks:
+      - app-network
+  # uncomment if you need start sending email to mock service
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "8025:8025" # Web interface (open http://localhost:8025)
+      - "1025:1025"
     networks:
       - app-network
 
