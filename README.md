@@ -132,7 +132,7 @@ cp .env_template .env
 The recommended way using Docker Compose, which automatically handles networking, service dependencies, and environment variables:
 
 ```bash
-docker compose up -d --build
+docker compose up -d --build db api_collector alerting_worker
 ```
 
 **Method 2: Manual Build (CI/CD / Production)**

@@ -42,9 +42,12 @@ The test suite utilizes a fixture-based orchestration approach. Shared fixtures 
 
 1. **Setup** – Before tests start, pytest triggers:
 
-   ```bash
-   docker compose up -d
-   ```
+```bash
+docker compose up -d db api_collector alerting_worker
+
+# OR script
+./script/start.sh
+```
 
 2. **Health Checks** – The suite verifies that the API and supporting services are responsive before executing test functions.
 
@@ -100,7 +103,10 @@ When using `KEEP_INFRA=true`:
 If application code changes, rebuild or restart containers before rerunning tests:
 
 ```bash
-docker compose up -d --build
+./scripts/redeploy.sh
+
+# OR Run full pipeline with tests
+./scripts/run_pipeline.sh
 ```
 
 ---
@@ -262,7 +268,7 @@ Check that:
 If running with `KEEP_INFRA=true`, ensure the latest application code has been deployed:
 
 ```bash
-docker compose up -d --build
+./scripts/redeploy.sh
 ```
 
 ---
