@@ -42,8 +42,8 @@ A concise step-by-step implementation checklist aligned with the requirements an
 - [x] Ensure `infra/start.sh`, `stop.sh`, `build.sh` work correctly.
 
 ### 9. Documentation
-- [ ] README: how to run locally, key endpoints.
-- [ ] Link to C4 / ER diagrams in `docs/`.
+- [x] README: how to run locally, key endpoints.
+- [x] Link to C4 / ER diagrams in `docs/`.
 
 ### 10. Release
 - [x] First functional commit with clear message.
@@ -56,13 +56,14 @@ A concise step-by-step implementation checklist aligned with the requirements an
 ### Extended logging & monitoring
 - [ ] Structured logs (JSON format).
 - [ ] Metrics export (Prometheus endpoint).
-- [ ] Request/response logging for API.
+- [x] Request/response logging for API.
 
 ### Tests & validation
 - [x] Unit tests for worker and API logic (pytest).
 - [x] Integration/smoke tests: `docker compose up` + smoke requests.
 - [ ] Testcontainers for real DB testing.
 - [x] Infrastructure and script testing (linting, smoke testing)
+- [x] start clients
 
 ### CI / CD
 - [ ] GitHub Actions pipeline: lint (ruff), type checks (mypy), unit tests.
@@ -71,7 +72,7 @@ A concise step-by-step implementation checklist aligned with the requirements an
 - [x] Smoke tests in pipeline.
 
 ### Security & optimization
-- [ ] Minimize DB user privileges (separate app user).
+- [x] Minimize DB user privileges (separate app user).
 - [ ] Non-root user in containers.
 - [ ] Run `pip-audit` / `safety` and fix vulnerabilities.
 - [ ] Production: Vault / SecretsManager integration.
@@ -97,7 +98,7 @@ A concise step-by-step implementation checklist aligned with the requirements an
 ### Frontend
 - [x] Swagger UI
 - [ ] Service status dashboard
-- [ ] start clients
+
 
 ---
 

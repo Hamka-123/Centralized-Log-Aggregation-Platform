@@ -5,7 +5,7 @@ C4Component
     Container_Boundary(worker, "Alerting Worker") {
         Component(ctrl, "Worker Controller", "Orchestrator", "Manages lifecycle and threading")
         Component(fetcher, "Data Fetcher", "Data Access", "Fetches logs from database")
-        Component(engine, "Alert Engine", "Logic", "Business logic and spam protection")
+        Component(engine, "Alert Engine", "Logic", "Business logic and deduplication via atomic claim")
         Component(smtp, "SMTP Client", "Gateway", "Encapsulates email sending")
     }
 

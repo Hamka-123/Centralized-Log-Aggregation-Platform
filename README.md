@@ -12,6 +12,8 @@ The **Centralized Log Aggregation Platform** provides:
 - **Alert Generation**: Automated detection and alerting for ERROR and CRITICAL level logs
 - **Email Notifications**: SMTP-based alert delivery to administrators
 - **Health Monitoring**: Built-in health check endpoints for container orchestration
+- **Request Logging**: Automatic logging of every HTTP request with method, path, status code and duration
+- **Graceful Shutdown**: Worker handles SIGTERM/SIGINT, waits for in-flight tasks before exiting
 - **Modular Architecture**: Cleanly separated API Collector and Alerting Worker services
 
 ---
@@ -45,36 +47,34 @@ The platform consists of three main services:
 Centralized-Log-Aggregation-Platform/
 ├── api_collector/          # FastAPI application for log collection
 │   ├── src/
-│   │   ├── main.py        # FastAPI app and route definitions
-│   │   ├── database.py    # Database connection and session management
-│   │   ├── models/        # Data models
-│   │   ├── repositories/  # Data access layer
-│   │   ├── services/      # Business logic
-│   │   ├── api/           # API route handlers
-│   │   ├── logs/          # Logging configuration
-│   │   └── utils/         # Utility functions
+│   │   ├── main.py        # FastAPI app, lifespan, middleware wiring
+│   │   ├── db_async.py    # Async connection pool (aiomysql)
+│   │   ├── api/           # HTTP route handlers
+│   │   ├── middleware/    # Request logging middleware
+│   │   ├── models/        # Pydantic data contracts
+│   │   ├── repositories/  # Data access layer (Repository Pattern)
+│   │   └── services/      # Business logic
 │   ├── Dockerfile
 │   └── requirements.txt
 │
-├── alerting_worker/        # Async worker for alert generation
+├── alerting_worker/        # Background worker for alert generation
 │   ├── src/
-│   │   ├── main.py        # Worker entry point
-│   │   ├── models/        # Data models
+│   │   ├── main.py        # Worker entry point, dependency injection
+│   │   ├── db_sync.py     # Synchronous DB connection with retry
 │   │   ├── repositories/  # Data access layer
-│   │   ├── services/      # Alert engine and SMTP client
-│   │   ├── utils/         # Utility functions
-│   │   └── workers/       # Worker controller
+│   │   ├── services/      # Alert engine, business logic
+│   │   ├── utils/         # SMTP client (Gateway pattern)
+│   │   └── workers/       # Worker controller (ThreadPoolExecutor)
 │   ├── Dockerfile
 │   └── requirements.txt
+│
+├── common/                 # Shared modules
+│   ├── config.py          # Environment config (12-factor)
+│   └── logging_setup.py   # Centralized logging setup
 │
 ├── db/                     # Database configuration
 │   ├── init.sql          # Schema initialization script
 │   └── Dockerfile        # MariaDB custom image
-│
-├── config/                 # Application configuration
-│   ├── settings.py        # Environment settings
-│   ├── logging_config.py  # Logging configuration
-│   └── constants.py       # Application constants
 │
 ├── scripts/                # Utility scripts
 │   ├── start.sh          # Start services
@@ -91,6 +91,7 @@ Centralized-Log-Aggregation-Platform/
 │   ├── api/              # API integration tests
 │   ├── integration/      # End-to-end tests
 │   ├── infra/            # Infrastructure tests
+│   ├── load_tests/       # Load testing (client swarm, reports)
 │   └── README.md         # Testing documentation
 │
 ├── docs/                   # Architecture and design documentation
@@ -186,15 +187,37 @@ http://localhost:8000/docs
 GET /health
 ```
 
+#### Register a Service
+```http
+POST /api/services/register
+Content-Type: application/json
+
+{
+  "service_name": "my-service",
+  "description": "My microservice"
+}
+```
+
+#### Get Service Name
+```http
+GET /api/services/{service_id}
+```
+
 #### Submit Log Entry
 ```http
-POST /logs
+POST /api/logs
 Content-Type: application/json
+
+{
+  "service_id": 1,
+  "level": "ERROR",
+  "message": "Connection timeout"
+}
 ```
 
 #### Retrieve Logs
 ```http
-GET /logs?service_name=api_service&level=ERROR&limit=100
+GET /api/logs?service_name=my-service&level=ERROR&limit=100
 ```
 ---
 
@@ -222,6 +245,8 @@ The project includes a comprehensive test suite with multiple layers:
 - **Infrastructure Tests**: Docker and service readiness checks
 
 For detailed testing documentation, setup instructions, and usage examples, see [tests/README.md](tests/README.md).
+
+For load testing with multiple concurrent clients, MailHog integration, and performance reporting, see [tests/load_tests/client_simulator/README.md](tests/load_tests/client_simulator/README.md).
 
 Quick test run:
 ```bash
@@ -295,6 +320,15 @@ docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root mariadb:latest
 
 ## 📝 Logs and Monitoring
 
+The API Collector includes a `RequestLoggingMiddleware` that logs every incoming HTTP request:
+
+```
+2026-06-19 10:58:00 - api_collector - INFO - --> POST /api/logs
+2026-06-19 10:58:00 - api_collector - INFO - <-- POST /api/logs — 201 (12ms)
+```
+
+The Alerting Worker supports graceful shutdown — it catches SIGTERM (from Docker) and finishes processing in-flight alerts before exiting.
+
 All services produce structured logs to stdout/stderr and are captured by Docker:
 
 ```bash
@@ -310,4 +344,3 @@ docker compose logs -f db
 # Follow all logs
 docker compose logs -f
 ```
-
