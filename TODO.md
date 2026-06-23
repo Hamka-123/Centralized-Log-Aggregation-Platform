@@ -47,7 +47,7 @@ A concise step-by-step implementation checklist aligned with the requirements an
 
 ### 10. Release
 - [x] First functional commit with clear message.
-- [ ] Tag as `v0.1.0` or `v1.0.0-alpha`.
+- [x] Tag as `v1.0` or `v1.0.0-alpha`.
 
 ---
 
@@ -104,3 +104,4 @@ A concise step-by-step implementation checklist aligned with the requirements an
 
 **Green line (2 weeks):** Must Have items deliver a working MVP that meets course requirements.  
 **Blue line (future):** Nice to Have items improve scalability, reliability, and DevOps maturity.
+
