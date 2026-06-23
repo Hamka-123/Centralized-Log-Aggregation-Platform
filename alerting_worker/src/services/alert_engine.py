@@ -1,5 +1,6 @@
 import logging
 
+
 logger = logging.getLogger(__name__)
 
 class AlertEngine:
@@ -27,7 +28,7 @@ class AlertEngine:
                 logger.info(f"Processing log {log['id']} in thread...")
                 
                 # 2. Send email
-                subject = f"Alert: {log['level']} in service {log['service_name']} id: {log['service_id']} "
+                subject = f"Alert: 🔥 {log['level']} in service {log['service_name']} id: {log['service_id']} "
                 body = (
                     f"ALERT DETAILS\n"
                     f"-----------------------------------------------\n"
