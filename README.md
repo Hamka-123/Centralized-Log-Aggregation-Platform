@@ -1,3 +1,5 @@
+**[View the project presentation →](https://docs.google.com/presentation/d/1B59gownHOBTjBwzCm44b97DK2W8WGQQBjBd0s5iSMgQ/edit?slide=id.p1)**
+
 # Centralized Log Aggregation Platform
 
 An enterprise-grade system designed for collecting, storing, analyzing, and alerting on logs from various sources. The platform is built as a modular Python application with containerized microservices, featuring a REST API for log ingestion and an asynchronous worker for automated alerting.
