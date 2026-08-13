@@ -133,7 +133,7 @@ cp .env_template .env
 Start all services:
 
 ```bash
-docker compose up -d --build
+docker compose up -d --build db api_collector alerting_worker
 ```
 
 Check service status:
