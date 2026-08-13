@@ -168,6 +168,33 @@ docker compose down
 
 ---
 
+## Automation Scripts
+
+The repository includes Bash scripts for automating common development and infrastructure operations:
+
+```bash
+# Start services
+./scripts/start.sh
+
+# Stop services
+./scripts/stop.sh
+
+# Build Docker images
+./scripts/build.sh
+
+# Rebuild and redeploy
+./scripts/redeploy.sh
+
+# Run the full pipeline
+./scripts/run_pipeline.sh
+
+# Validate infrastructure
+./scripts/check_infra.sh
+```
+These scripts provide a consistent way to build, start, stop, redeploy, validate, and test the local environment.
+
+---
+
 ## 🧪 Testing
 
 The project uses a layered testing approach covering application logic, API behavior, service integration, infrastructure, and performance.
