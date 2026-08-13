@@ -4,7 +4,7 @@ A modular centralized logging and alerting platform for collecting, storing, pro
 
 The project combines a REST API, background alerting worker, persistent storage, containerized infrastructure, automated testing, and operational tooling.
 
-**[View the project presentation →](https://docs.google.com/presentation/d/1B59gownHOBTjBwzCm44b97DK2W8WGQQBjBd0s5iSMgQ/edit?slide=id.p1)**
+**[View the project presentation →](https://docs.google.com/videos/d/1lWnLlKI2mKmtJ_b96qVD9UxfIOhBBP-zCANM67JY1ck/play?usp=sharing)**
 
 ---
 
