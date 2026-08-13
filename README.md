@@ -301,21 +301,29 @@ source venv/bin/activate
 pip install -r api_collector/requirements.txt
 pip install -r alerting_worker/requirements.txt
 pip install -r tests/requirements.txt
-```
+````
 
-### Running Services Locally
+### Running Locally
+
+The platform can be managed using Docker Compose or the provided management scripts.
+
+#### Docker Compose
 
 ```bash
-# Terminal 1: API Collector
-cd api_collector
-python -m src.main
+docker compose up -d --build
+```
 
-# Terminal 2: Alerting Worker
-cd alerting_worker
-python -m src.main
+#### Management Scripts
 
-# Terminal 3: MariaDB (or use Docker)
-docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root mariadb:latest
+```bash
+# Start services
+./scripts/start.sh
+
+# Stop services
+./scripts/stop.sh
+
+# Rebuild and redeploy
+./scripts/redeploy.sh
 ```
 
 ---
