@@ -1,356 +1,255 @@
-**[View the project presentation →](https://docs.google.com/presentation/d/1B59gownHOBTjBwzCm44b97DK2W8WGQQBjBd0s5iSMgQ/edit?slide=id.p1)**
-
 # Centralized Log Aggregation Platform
 
-An enterprise-grade system designed for collecting, storing, analyzing, and alerting on logs from various sources. The platform is built as a modular Python application with containerized microservices, featuring a REST API for log ingestion and an asynchronous worker for automated alerting.
+A modular centralized logging and alerting platform for collecting, storing, processing, and monitoring logs from multiple services.
+
+The project combines a REST API, background alerting worker, persistent storage, containerized infrastructure, automated testing, and operational tooling.
+
+**[View the project presentation →](https://docs.google.com/presentation/d/1B59gownHOBTjBwzCm44b97DK2W8WGQQBjBd0s5iSMgQ/edit?slide=id.p1)**
 
 ---
 
-## 📋 Overview
+## 🚀 What It Does
 
-The **Centralized Log Aggregation Platform** provides:
-- **Log Collection**: RESTful API for ingesting logs from multiple services
-- **Log Storage**: Persistent MariaDB database with optimized schema
-- **Alert Generation**: Automated detection and alerting for ERROR and CRITICAL level logs
-- **Email Notifications**: SMTP-based alert delivery to administrators
-- **Health Monitoring**: Built-in health check endpoints for container orchestration
-- **Request Logging**: Automatic logging of every HTTP request with method, path, status code and duration
-- **Graceful Shutdown**: Worker handles SIGTERM/SIGINT, waits for in-flight tasks before exiting
-- **Modular Architecture**: Cleanly separated API Collector and Alerting Worker services
-
----
-
-## 🏗️ System Architecture
-
-The platform consists of three main services:
-
-1. **API Collector** (FastAPI)
-   - RESTful API service for log ingestion
-   - Log filtering and retrieval endpoints
-   - Health check endpoint
-   - Database abstraction layer
-
-2. **Alerting Worker** (Python Worker)
-   - Background service for processing unalerted logs
-   - Detects ERROR and CRITICAL level entries
-   - Sends email notifications via SMTP
-   - Marks processed alerts in the database
-
-3. **Database** (MariaDB)
-   - Persistent data storage
-   - Optimized schema with indexes for high-volume queries
-   - Support for multiple services and alert tracking
+- Collects logs from multiple services through a REST API
+- Validates and stores log entries in MariaDB
+- Detects `ERROR` and `CRITICAL` events
+- Sends automated email alerts through SMTP
+- Provides health checks and operational logging
+- Runs API and background processing as separate services
+- Supports graceful worker shutdown
+- Includes automated testing and load-testing capabilities
+- Provides Docker-based local deployment and infrastructure validation
 
 ---
 
-## 📁 Project Structure
+## 🏗️ Architecture
 
-```
-Centralized-Log-Aggregation-Platform/
-├── api_collector/          # FastAPI application for log collection
-│   ├── src/
-│   │   ├── main.py        # FastAPI app, lifespan, middleware wiring
-│   │   ├── db_async.py    # Async connection pool (aiomysql)
-│   │   ├── api/           # HTTP route handlers
-│   │   ├── middleware/    # Request logging middleware
-│   │   ├── models/        # Pydantic data contracts
-│   │   ├── repositories/  # Data access layer (Repository Pattern)
-│   │   └── services/      # Business logic
-│   ├── Dockerfile
-│   └── requirements.txt
-│
-├── alerting_worker/        # Background worker for alert generation
-│   ├── src/
-│   │   ├── main.py        # Worker entry point, dependency injection
-│   │   ├── db_sync.py     # Synchronous DB connection with retry
-│   │   ├── repositories/  # Data access layer
-│   │   ├── services/      # Alert engine, business logic
-│   │   ├── utils/         # SMTP client (Gateway pattern)
-│   │   └── workers/       # Worker controller (ThreadPoolExecutor)
-│   ├── Dockerfile
-│   └── requirements.txt
-│
-├── common/                 # Shared modules
-│   ├── config.py          # Environment config (12-factor)
-│   └── logging_setup.py   # Centralized logging setup
-│
-├── db/                     # Database configuration
-│   ├── init.sql          # Schema initialization script
-│   └── Dockerfile        # MariaDB custom image
-│
-├── scripts/                # Utility scripts
-│   ├── start.sh          # Start services
-│   ├── stop.sh           # Stop services
-│   ├── build.sh          # Build Docker images
-│   ├── redeploy.sh       # Redeploy services
-│   ├── run_pipeline.sh   # Full pipeline execution
-│   ├── check_infra.sh    # Infrastructure validation
-│   ├── wait-for-it.sh    # Service dependency waiting
-│   └── debug_db.py       # Database debugging utility
-│
-├── tests/                  # Comprehensive test suite
-│   ├── unit/             # Unit tests
-│   ├── api/              # API integration tests
-│   ├── integration/      # End-to-end tests
-│   ├── infra/            # Infrastructure tests
-│   ├── load_tests/       # Load testing (client swarm, reports)
-│   └── README.md         # Testing documentation
-│
-├── docs/                   # Architecture and design documentation
-│   ├── c4_L1.md          # C4 Context diagram
-│   ├── c4_L2.md          # C4 Container diagram
-│   ├── c4_L3_*.md        # C4 Component diagrams
-│   ├── c4_L4_*.md        # C4 Code diagrams
-│   ├── ER_diagram.md     # Entity-Relationship diagram
-│   ├── data_flow.md      # Data flow documentation
-│   └── infra.md          # Infrastructure documentation
-│
-├── docker-compose.yml      # Docker Compose orchestration
-├── .env_template          # Environment variables template
-└── TODO.md                # Implementation checklist
-```
+```text
+                  ┌─────────────────────┐
+                  │   Source Services   │
+                  │                     │
+                  │ Auth / Billing /     │
+                  │ Gateway / Other     │
+                  └──────────┬──────────┘
+                             │
+                             │ POST /api/logs
+                             ▼
+                  ┌─────────────────────┐
+                  │    API Collector    │
+                  │       FastAPI       │
+                  └──────────┬──────────┘
+                             │
+                             │ Store logs
+                             ▼
+                  ┌─────────────────────┐
+                  │       MariaDB       │
+                  └──────────┬──────────┘
+                             │
+                             │ Process logs
+                             ▼
+                  ┌─────────────────────┐
+                  │   Alerting Worker   │
+                  │      Python         │
+                  └──────────┬──────────┘
+                             │
+                             │ Email alerts
+                             ▼
+                  ┌─────────────────────┐
+                  │     SMTP Server     │
+                  └─────────────────────┘
+````
+
+The system is intentionally split into independently deployable components:
+
+* **API Collector** — asynchronous FastAPI service responsible for log ingestion and retrieval
+* **Alerting Worker** — background service responsible for detecting alertable logs and sending notifications
+* **MariaDB** — persistent storage for services, logs, and alert state
+
+Detailed architecture and design decisions are documented in [`docs/`](docs/).
+
+---
+
+## 🛠️ Technology Stack
+
+### Application
+
+* Python 3.11+
+* FastAPI
+* Pydantic
+* aiomysql
+
+### Infrastructure
+
+* Docker
+* Docker Compose
+* Bash
+* Linux
+
+### Database
+
+* MariaDB
+* SQL
+* Indexed relational schema
+
+### Testing
+
+* pytest
+* Unit testing
+* API testing
+* Integration testing
+* Infrastructure testing
+* Load testing
+
+### Engineering Practices
+
+* Layered architecture
+* Repository Pattern
+* Service Layer
+* Gateway Pattern
+* Dependency Injection
+* Graceful shutdown
+* Health checks
+* Environment-based configuration
+* Infrastructure validation
 
 ---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Docker and Docker Compose (recommended)
-- Python 3.11+ (for local development)
-- Git
 
-### Setup Instructions
+* Docker
+* Docker Compose
+* Git
 
-#### 1. Environment Configuration
-Before launching, duplicate `.env_template` as `.env` and populate the required variables:
+### Start the Platform
+
+Create the environment configuration:
 
 ```bash
 cp .env_template .env
 ```
 
-#### 2. Deployment Methods
-
-**Method 1: Docker Compose (Recommended for Development)**
-
-The recommended way using Docker Compose, which automatically handles networking, service dependencies, and environment variables:
+Start all services:
 
 ```bash
-docker compose up -d --build db api_collector alerting_worker
+docker compose up -d --build
 ```
 
-**Method 2: Manual Build (CI/CD / Production)**
-
-For specific image build stages or production deployments, use the provided scripts:
+Check service status:
 
 ```bash
-# Build images
-./scripts/build.sh
-
-# Start services
-./scripts/start.sh
-
-# Stop services
-./scripts/stop.sh
-
-# Full redeploy with cleaning cache
-./scripts/redeploy.sh
-
-# Run full pipeline with tests
-./scripts/run_pipeline.sh
+docker compose ps
 ```
 
-#### 3. Verify Deployment
-
-Check service health:
+Verify the API:
 
 ```bash
-# API Collector health
 curl http://localhost:8000/health
-
-# Check logs
-docker compose logs -f api_collector
-docker compose logs -f alerting_worker
-docker compose logs -f db
 ```
 
----
+API documentation:
 
-## 📡 API Documentation
-
-### Base URL
-```
+```text
 http://localhost:8000/docs
 ```
 
-### Endpoints
+View logs:
 
-#### Health Check
-```http
-GET /health
+```bash
+docker compose logs -f
 ```
 
-#### Register a Service
-```http
-POST /api/services/register
-Content-Type: application/json
+Stop the platform:
 
-{
-  "service_name": "my-service",
-  "description": "My microservice"
-}
-```
-
-#### Get Service Name
-```http
-GET /api/services/{service_id}
-```
-
-#### Submit Log Entry
-```http
-POST /api/logs
-Content-Type: application/json
-
-{
-  "service_id": 1,
-  "level": "ERROR",
-  "message": "Connection timeout"
-}
-```
-
-#### Retrieve Logs
-```http
-GET /api/logs?service_name=my-service&level=ERROR&limit=100
-```
----
-
-## ⚙️ Configuration
-
-### Logging Configuration
-
-The application uses Python's standard logging with both console and file output:
-
-```python
-# Log Levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
-# Minimum level: INFO
-# Format: [timestamp] [level] [logger_name]: message
+```bash
+docker compose down
 ```
 
 ---
 
 ## 🧪 Testing
 
-The project includes a comprehensive test suite with multiple layers:
+The project uses a layered testing approach covering application logic, API behavior, service integration, infrastructure, and performance.
 
-- **Unit Tests**: Individual component testing
-- **API Integration Tests**: REST endpoint validation
-- **End-to-End Tests**: Complete workflow validation
-- **Infrastructure Tests**: Docker and service readiness checks
+```text
+Unit
+  ↓
+API
+  ↓
+Integration
+  ↓
+Infrastructure
+  ↓
+Load Testing
+```
 
-For detailed testing documentation, setup instructions, and usage examples, see [tests/README.md](tests/README.md).
+Install test dependencies:
 
-For load testing with multiple concurrent clients, MailHog integration, and performance reporting, see [tests/load_tests/client_simulator/README.md](tests/load_tests/client_simulator/README.md).
-
-Quick test run:
 ```bash
-# Install test dependencies
 pip install -r tests/requirements.txt
+```
 
-# Run all tests
+Run the test suite:
+
+```bash
 pytest tests/ -v
+```
 
-# Run specific test category
-pytest tests/unit/ -v
-pytest tests/api/ -v
-pytest tests/integration/ -v
+Detailed testing strategy and execution instructions are available in the [`tests/README.md`](tests/README.md).
+
+For performance testing, see the [Load Testing Guide](tests/load_tests/client_simulator/README.md).
+
+---
+
+## 📚 Documentation
+
+### Architecture
+
+* [C4 Level 1 — System Context](docs/c4_L1.md)
+* [C4 Level 2 — Container Architecture](docs/c4_L2.md)
+* [C4 Level 3 — API Collector](docs/c4_L3_api_collector.md)
+* [C4 Level 3 — Alerting Worker](docs/c4_L3_alerting_worker.md)
+* [Entity-Relationship Diagram](docs/ER_diagram.md)
+* [Data Flow](docs/data_flow.md)
+* [Infrastructure](docs/infra.md)
+
+### Project Documentation
+
+* [Project Presentation](https://docs.google.com/presentation/d/1B59gownHOBTjBwzCm44b97DK2W8WGQQBjBd0s5iSMgQ/edit?slide=id.p1)
+* [Full Project Documentation](https://docs.google.com/document/d/1ZYanmctLJ1nQAkrA3QUProKJxsqcL_bCVbXhCCZKYlA/edit?usp=sharing)
+* [Testing Guide](tests/README.md)
+* [Load Testing Guide](tests/load_tests/client_simulator/README.md)
+* [Implementation Checklist](TODO.md)
+
+---
+
+## 📁 Repository Structure
+
+```text
+Centralized-Log-Aggregation-Platform/
+│
+├── api_collector/        # FastAPI log ingestion service
+├── alerting_worker/      # Background alerting service
+├── common/               # Shared configuration and logging
+├── db/                   # Database initialization
+├── scripts/              # Operational and infrastructure scripts
+├── tests/                # Automated and load tests
+├── docs/                 # Architecture and design documentation
+│
+├── docker-compose.yml
+├── .env_template
+└── TODO.md
 ```
 
 ---
 
-## 📊 Architecture Diagrams
+## 🔄 Engineering Approach
 
-Detailed architecture documentation is available in the `docs/` directory:
+The project explores the complete engineering lifecycle around a small distributed system:
 
-- **[C4 Model - Level 1](docs/c4_L1.md)** - System Context
-- **[C4 Model - Level 2](docs/c4_L2.md)** - Container Architecture
-- **[C4 Model - Level 3](docs/c4_L3_api_collector.md)** - API Collector Components
-- **[C4 Model - Level 3](docs/c4_L3_alerting_worker.md)** - Alerting Worker Components
-- **[Entity-Relationship Diagram](docs/ER_diagram.md)** - Database Schema
-- **[Data Flow](docs/data_flow.md)** - System Data Flow
-- **[Infrastructure](docs/infra.md)** - Infrastructure Setup
+**Design → Build → Containerize → Test → Operate → Investigate → Improve**
 
----
+The focus is not only on implementing the application itself, but on combining application architecture, infrastructure, testing, automation, and operational practices into one reproducible engineering environment.
 
-## 📚 Additional Documentation
-
-- **[Full Project Documentation](https://docs.google.com/document/d/1ZYanmctLJ1nQAkrA3QUProKJxsqcL_bCVbXhCCZKYlA/edit?usp=sharing)** - Comprehensive design document
-- **[Implementation Checklist](TODO.md)** - Feature implementation status
-- **[Testing Guide](tests/README.md)** - Detailed testing strategy and execution
-
----
-
-## 🛠️ Development
-
-### Local Development Setup
-
-```bash
-# Create virtual environment
-python3.11 -m venv venv
-source venv/bin/activate
-
-# Install dependencies
-pip install -r api_collector/requirements.txt
-pip install -r alerting_worker/requirements.txt
-pip install -r tests/requirements.txt
-````
-
-### Running Locally
-
-The platform can be managed using Docker Compose or the provided management scripts.
-
-#### Docker Compose
-
-```bash
-docker compose up -d --build
-```
-
-#### Management Scripts
-
-```bash
-# Start services
-./scripts/start.sh
-
-# Stop services
-./scripts/stop.sh
-
-# Rebuild and redeploy
-./scripts/redeploy.sh
-```
-
----
-
-## 📝 Logs and Monitoring
-
-The API Collector includes a `RequestLoggingMiddleware` that logs every incoming HTTP request:
-
-```
-2026-06-19 10:58:00 - api_collector - INFO - --> POST /api/logs
-2026-06-19 10:58:00 - api_collector - INFO - <-- POST /api/logs — 201 (12ms)
-```
-
-The Alerting Worker supports graceful shutdown — it catches SIGTERM (from Docker) and finishes processing in-flight alerts before exiting.
-
-All services produce structured logs to stdout/stderr and are captured by Docker:
-
-```bash
-# View API Collector logs
-docker compose logs -f api_collector
-
-# View Alerting Worker logs
-docker compose logs -f alerting_worker
-
-# View Database logs
-docker compose logs -f db
-
-# Follow all logs
-docker compose logs -f
 ```
